@@ -25,7 +25,9 @@ app.get('/stats', async (req, res) => {
                 last_save: userProfile.last_save,
                 // raw: userProfile,
                 // items,
-                stats
+                data: {
+                    stats
+                }
             };
         }
 
