@@ -5,9 +5,9 @@ const app = express();
 
 
 
-app.get('/stats', async (req, res) => {
+app.get('/stats/:profile', async (req, res) => {
     try{
-        const { profile, allProfiles } = await getProfile(req.query.uuid, null, req.query.key, { cacheOnly: req.cacheOnly });
+        const { profile, allProfiles } = await getProfile(req.params.profile, null, req.query.key, { cacheOnly: req.cacheOnly });
 
         const output = { profiles: {} };
 
