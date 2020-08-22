@@ -16,6 +16,24 @@ const rarity_order = ['special', 'mythic', 'legendary', 'epic', 'rare', 'uncommo
 const MAX_SOULS = 209;
 
 
+async function getBackpackContents(arraybuf){
+    let buf = Buffer.from(arraybuf);
+
+    let data = await parseNbt(buf);
+    data = nbt.simplify(data);
+
+    let items = data.i;
+
+    for(const [index, item] of items.entries()){
+        item.isInactive = true;
+        item.inBackpack = true;
+        item.item_index = index;
+    }
+
+    return items;
+}
+
+
 function getPetLevel(pet){
     const rarityOffset = constants.pet_rarity_offset[pet.rarity];
     const levels = constants.pet_levels.slice(rarityOffset, rarityOffset + 99);
@@ -292,15 +310,15 @@ async function getItems(base64, customTextures = false, packs, cacheOnly = false
                 item.lore += "<br>" + helper.renderLore(`§7Obtained: §c${obtainmentDate.format("D MMM YYYY")}`);
             }
 
-            if(helper.hasPath(item, 'tag', 'ExtraAttributes', 'spawnedFor')){
-                if(!helper.hasPath(item, 'tag', 'ExtraAttributes', 'timestamp'))
-                    item.lore += "<br>";
+            // if(helper.hasPath(item, 'tag', 'ExtraAttributes', 'spawnedFor')){
+            //     if(!helper.hasPath(item, 'tag', 'ExtraAttributes', 'timestamp'))
+            //         item.lore += "<br>";
 
-                const spawnedFor = item.tag.ExtraAttributes.spawnedFor.replace(/\-/g, '');
-                const spawnedForUser = await helper.resolveUsernameOrUuid(spawnedFor, db, cacheOnly);
+            //     const spawnedFor = item.tag.ExtraAttributes.spawnedFor.replace(/\-/g, '');
+            //     const spawnedForUser = await helper.resolveUsernameOrUuid(spawnedFor, db, cacheOnly);
 
-                item.lore += "<br>" + helper.renderLore(`§7By: §c<a href="/stats/${spawnedFor}">${spawnedForUser.display_name}</a>`);
-            }
+            //     item.lore += "<br>" + helper.renderLore(`§7By: §c<a href="/stats/${spawnedFor}">${spawnedForUser.display_name}</a>`);
+            // }
 
             if(helper.hasPath(item, 'tag', 'ExtraAttributes', 'baseStatBoostPercentage')){
 
