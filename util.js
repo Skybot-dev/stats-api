@@ -1,5 +1,5 @@
 const helper = require('./helper');
-
+const mcData = require("minecraft-data")("1.8.9");
 const { getPath, hasPath, getId } = helper;
 
 const fetch = require('node-fetch');

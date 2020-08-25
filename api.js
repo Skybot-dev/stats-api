@@ -34,8 +34,19 @@ app.get('/stats/:profile', async (req, res) => {
         res.json(output);
     }catch(e){
         console.log(e);
-        if (e == "Request to Hypixel API failed. Please try again!") {
-            res.json({"success": false, "message": "invalid api key/hypixel api error"})
+        // if (e == "Request to Hypixel API failed. Please try again!") {
+        //     res.json({"success": false, "message": "invalid api key/hypixel api error"})
+        // }
+        switch (e) {
+            case "Request to Hypixel API failed. Please try again!":
+                res.json({"success": false, "message": "invalid api key/hypixel api error"})
+                break;
+            case "must be uuid":
+                res.json({"success": false, "message": "invalid uuid format"})
+            // case "Player has no SkyBlock profiles":
+            //     res.json({"success": false, "message": "invalid uuid"})
+            default:
+                break;
         }
     }
 });
