@@ -13,7 +13,10 @@ app.get('/stats/:profile', async (req, res) => {
 
         for(const singleProfile of allProfiles){
             const userProfile = singleProfile.members[profile.uuid];
-
+            if (userProfile == undefined) {
+                allProfiles.splice(allProfiles.indexOf(singleProfile), 1);
+                continue
+            };
             const items = await getAllItems(userProfile, req.query.pack);
             const data = await getStats(singleProfile, allProfiles, items);
             const stats = data.stats;
