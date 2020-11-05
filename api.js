@@ -5,16 +5,20 @@ const app = express();
 
 
 
-app.get('/stats/:profile', async (req, res) => {
-    try{
+app.get('/stats/:profile', async(req, res) => {
+    try {
         const { profile, allProfiles } = await getProfile(req.params.profile, null, req.query.key, { cacheOnly: req.cacheOnly });
 
         const output = { profiles: {} };
 
-        for(const singleProfile of allProfiles){
+        for (const singleProfile of allProfiles) {
+            if (singleProfile.members[profile.uuid] == undefined) allProfiles.splice(allProfiles.indexOf(singleProfile), 1);
+        }
+
+        for (const singleProfile of allProfiles) {
             const userProfile = singleProfile.members[profile.uuid];
             if (userProfile == undefined) {
-                delete allProfiles[singleProfile];
+                allProfiles.splice(allProfiles.indexOf(singleProfile), 1);
                 continue
             };
             const items = await getAllItems(userProfile, req.query.pack);
@@ -35,19 +39,19 @@ app.get('/stats/:profile', async (req, res) => {
         }
 
         res.json(output);
-    }catch(e){
+    } catch (e) {
         console.log(e);
         // if (e == "Request to Hypixel API failed. Please try again!") {
         //     res.json({"success": false, "message": "invalid api key/hypixel api error"})
         // }
         switch (e) {
             case "Request to Hypixel API failed. Please try again!":
-                res.json({"success": false, "message": "invalid api key/hypixel api error"})
+                res.json({ "success": false, "message": "invalid api key/hypixel api error" })
                 break;
             case "must be uuid":
-                res.json({"success": false, "message": "invalid uuid format"})
-            // case "Player has no SkyBlock profiles":
-            //     res.json({"success": false, "message": "invalid uuid"})
+                res.json({ "success": false, "message": "invalid uuid format" })
+                    // case "Player has no SkyBlock profiles":
+                    //     res.json({"success": false, "message": "invalid uuid"})
             default:
                 break;
         }
