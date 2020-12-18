@@ -23,6 +23,17 @@ app.get('/stats/:profile', async(req, res) => {
             };
             const items = await getAllItems(userProfile, req.query.pack);
             const data = await getStats(singleProfile, allProfiles, items);
+            const networth = {}
+            const NETWORTH_INVS = ["armor", "wardrobe_inventory", "inventory", "enderchest", "talisman_bag", "fishing_bag", "quiver", "potion_bag"];
+            Object.keys(items).forEach(inv => {
+                if (NETWORTH_INVS.includes(inv)) {
+                    networth[inv] = 0;
+                    for (let item of items[inv]) {
+                        networth[inv] += item.coin_value?item.coin_value:0;
+                    }
+                }
+            }); 
+            networth.total = Object.values(networth).reduce((a, b) => a + b, 0);
             const stats = data.stats;
             output.success = true;
             output.profiles[singleProfile.profile_id] = {
@@ -32,6 +43,7 @@ app.get('/stats/:profile', async(req, res) => {
                 last_save: userProfile.last_save,
                 // raw: userProfile,
                 // items,
+                networth,
                 data: {
                     stats
                 }
