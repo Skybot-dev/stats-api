@@ -12,6 +12,7 @@ const parseNbt = util.promisify(nbt.parse);
 
 
 const rarity_order = ['special', 'mythic', 'legendary', 'epic', 'rare', 'uncommon', 'common'];
+const petTiers = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic'];
 
 const MAX_SOULS = 209;
 
