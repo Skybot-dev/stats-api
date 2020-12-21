@@ -17,10 +17,18 @@ const petTiers = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic'];
 const MAX_SOULS = 209;
 
 
+const format_item_name = name => {
+    name = name.toLowerCase();
+    name = name.replace(/✪/g, '').replace(/\[lvl ?[0-9]*]/gi, '').replace(/§[0-9a-k]/g, '').replace(/⚚/g, '');
+    Object.keys(constants.reforges).forEach(reforge => name = name.replace(reforge.toLowerCase(), ''));
+    return name.trim();
+}
+
 const [getPrices, setPrices] = (function () {
     let prices = {};
-    return [function () { return prices }, function (newPrices) { prices = newPrices }]
+    return [function () { return prices }, function (newPrices) { prices = Object.assign(prices, newPrices) }]
 })();
+
 
 async function updatePrices() {
     console.log(`[${new Date()}] updating prices...`);
@@ -32,7 +40,10 @@ async function updatePrices() {
         auctions = await fetch(`https://api.hypixel.net/skyblock/auctions?page=${page}`);
         auctions = await auctions.json();
         for (let auction of auctions.auctions.filter(x => x.bin)) {
-            auction.item_name = auction.item_name.replace(/✪/g, '').replace(/\[Lvl ?[0-9]*]/g, '');
+            let pet;
+            if (auction.item_name.match(/\[lvl ?[0-9]]*/gi)) pet = true; else pet = false;
+            auction.item_name = format_item_name(auction.item_name);
+            if (pet) auction.item_name = `${auction.tier.toLowerCase()}:${auction.item_name.replace(' ', '_')}`;
             Object.keys(auction_items).includes(auction.item_name) ? auction_items[auction.item_name].push(auction.starting_bid) : auction_items[auction.item_name] = [auction.starting_bid];
         }
     }
@@ -59,18 +70,20 @@ async function updatePrices() {
 updatePrices();
 setInterval(updatePrices, 300000);
 
-function getPrice(item) {
+function getPrice(item, pet = false) {
     try {
-        const name = item.tag.display.Name.replace(/✪/g, '').replace(/\[Lvl ?[0-9]*]/g, '').replace(/§[0-9a-k]/g, '');
+        let name = pet ? `${item.tier.toLowerCase()}:${item.type.toLowerCase()}` : format_item_name(item.tag.display.Name);
         const prices = getPrices();
-        const key = (Object.keys(prices).includes(name))? name: Object.keys(prices).includes(item.tag.ExtraAttributes.id)? item.tag.ExtraAttributes.id: null;
+        const key = (Object.keys(prices).includes(name)) ? name : Object.keys(prices).includes(item.tag.ExtraAttributes.id) ? item.tag.ExtraAttributes.id : null;
         if (key == null) return 0;
         let val = prices[key].avg
-        val += item.tag.ExtraAttributes.hot_potato_count ? prices.HOT_POTATO_BOOK.avg * item.hot_potato_count : 0;
-        val += item.tag.ExtraAttributes.rarity_upgrades ? prices.RECOMBOBULATOR_3000.avg : 0;
+        if (!pet) {
+            val += item.tag.ExtraAttributes.hot_potato_count ? prices.HOT_POTATO_BOOK.avg * item.tag.ExtraAttributes.hot_potato_count : 0;
+            val += item.tag.ExtraAttributes.rarity_upgrades ? prices.RECOMBOBULATOR_3000.avg : 0;
+        }
         return val;
     }
-    catch {
+    catch (e) {
         return 0;
     }
 }
@@ -770,7 +783,7 @@ async function getPets(profile) {
     for (const pet of profile.pets) {
         if (!('tier' in pet))
             continue;
-
+        pet.coin_value = getPrice(pet, true);
         pet.rarity = pet.tier.toLowerCase();
 
         if (pet.heldItem == 'PET_ITEM_TIER_BOOST')
