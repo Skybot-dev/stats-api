@@ -33,7 +33,7 @@ app.get('/stats/:profile', async(req, res) => {
                     }
                 }
             }); 
-            networth.pets = data.pets.reduce((a, b) => a + b.coin_value, 0);
+            networth.pets = data.pets.reduce((a, b) => a + b.coin_value?b.coin_value:0, 0);
             networth.total = Object.values(networth).reduce((a, b) => a + b, 0);
             const stats = data.stats;
             output.success = true;
