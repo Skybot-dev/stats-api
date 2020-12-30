@@ -78,8 +78,8 @@ function getPrice(item, pet = false) {
         if (key == null) return 0;
         let val = prices[key].min
         if (!pet) {
-            val += item.tag.ExtraAttributes.hot_potato_count ? prices.HOT_POTATO_BOOK.avg * item.tag.ExtraAttributes.hot_potato_count : 0;
-            val += item.tag.ExtraAttributes.rarity_upgrades ? prices.RECOMBOBULATOR_3000.avg : 0;
+            val += item.tag.ExtraAttributes.hot_potato_count ? prices.HOT_POTATO_BOOK.min * item.tag.ExtraAttributes.hot_potato_count : 0;
+            val += item.tag.ExtraAttributes.rarity_upgrades ? prices.RECOMBOBULATOR_3000.min : 0;
         }
         return val;
     }
