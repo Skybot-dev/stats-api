@@ -53,15 +53,15 @@ async function updatePrices() {
     Object.keys(bazaar_data).forEach(item =>
         prices[item] = {
             avg: bazaar_data[item].price,
-            min: bazaar_data[item].sellPrice,
-            max: bazaar_data[item].buyPrice,
+            min: Math.round(bazaar_data[item].sellPrice),
+            max: Math.round(bazaar_data[item].buyPrice),
         }
     )
     Object.keys(auction_items).forEach(item => {
         prices[item] = {
             avg: auction_items[item].reduce((total, value) => total + value) / auction_items[item].length,
-            min: Math.min(auction_items[item]),
-            max: Math.max(auction_items[item]),
+            min: Math.round(Math.min(auction_items[item])),
+            max: Math.round(Math.max(auction_items[item])),
         }
     });
     setPrices(prices);
