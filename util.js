@@ -60,8 +60,8 @@ async function updatePrices() {
     Object.keys(auction_items).forEach(item => {
         prices[item] = {
             avg: auction_items[item].reduce((total, value) => total + value) / auction_items[item].length,
-            min: Math.round(Math.min(auction_items[item])),
-            max: Math.round(Math.max(auction_items[item])),
+            min: Math.round(Math.min(...auction_items[item])),
+            max: Math.round(Math.max(...auction_items[item])),
         }
     });
     setPrices(prices);
