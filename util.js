@@ -17,10 +17,18 @@ const petTiers = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic'];
 const MAX_SOULS = 209;
 
 
-const format_item_name = name => {
+const format_item_name = (name, { pet = false, tier='common', level = null } = {}) => {
     name = name.toLowerCase();
-    name = name.replace(/✪/g, '').replace(/\[lvl ?[0-9]*]/gi, '').replace(/§[0-9a-k]/g, '').replace(/⚚/g, '');
-    Object.keys(constants.reforges).forEach(reforge => name = name.replace(reforge.toLowerCase(), ''));
+    if (pet) {
+        if (!level) {
+            const match = (name.match(/\[lvl ?(?<level>[0-9]+)]/))
+            level = match ? match.groups.level <= 75 ? 1 : match.groups.level != 100 ? 2 : 3 : null;
+            name = name.replace(/\[lvl ?([0-9]*)] ?/gi, `${level}:`);
+            name = `${tier}:${name}`
+        } else name = `${tier}:${level}:${name}`
+    }
+    name = name.replace(/✪/g, '').replace(/§[0-9a-k]/g, '').replace(/⚚/g, '');
+    if (!pet) Object.keys(constants.reforges).forEach(reforge => name = name.replace(reforge.toLowerCase(), ''));
     return name.trim();
 }
 
@@ -43,7 +51,8 @@ async function updatePrices() {
             let pet;
             if (auction.item_name.match(/\[lvl ?[0-9]]*/gi)) pet = true; else pet = false;
             auction.item_name = format_item_name(auction.item_name);
-            if (pet) auction.item_name = `${auction.tier.toLowerCase()}:${auction.item_name.replace(' ', '_')}`;
+            if (pet) auction.item_name = format_item_name(auction.item_name, { pet: true, tier: auction.tier.toLowerCase() })
+            // if (pet) auction.item_name = `${auction.item_name.match(/\[lvl ?(?<level>[0-9]+)]/).groups.level}${auction.tier.toLowerCase()}:${auction.item_name.replace(' ', '_')}`;
             Object.keys(auction_items).includes(auction.item_name) ? auction_items[auction.item_name].push(auction.starting_bid) : auction_items[auction.item_name] = [auction.starting_bid];
         }
     }
@@ -72,7 +81,7 @@ setInterval(updatePrices, 300000);
 
 function getPrice(item, pet = false) {
     try {
-        let name = pet ? `${item.tier.toLowerCase()}:${item.type.toLowerCase()}` : format_item_name(item.tag.display.Name);
+        let name = pet ? format_item_name(item.type.toLowerCase(), { pet: true, tier: item.tier.toLowerCase(), level: item.level.level <= 75 ? 1 : item.level.level != 100? 2:3 }) : format_item_name(item.tag.display.Name);
         const prices = getPrices();
         const key = (Object.keys(prices).includes(name)) ? name : Object.keys(prices).includes(item.tag.ExtraAttributes.id) ? item.tag.ExtraAttributes.id : null;
         if (key == null) return 0;
@@ -783,13 +792,13 @@ async function getPets(profile) {
     for (const pet of profile.pets) {
         if (!('tier' in pet))
             continue;
-        pet.coin_value = getPrice(pet, true);
         pet.rarity = pet.tier.toLowerCase();
 
         if (pet.heldItem == 'PET_ITEM_TIER_BOOST')
             pet.rarity = petTiers[Math.min(petTiers.length - 1, petTiers.indexOf(pet.rarity) + 1)];
 
         pet.level = getPetLevel(pet);
+        pet.coin_value = getPrice(pet, true);
         pet.stats = {};
 
         const petData = constants.pet_data[pet.type] || {
