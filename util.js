@@ -51,7 +51,10 @@ async function updatePrices() {
             let pet;
             if (auction.item_name.match(/\[lvl ?[0-9]]*/gi)) pet = true; else pet = false;
             auction.item_name = format_item_name(auction.item_name);
-            if (pet) auction.item_name = format_item_name(auction.item_name, { pet: true, tier: auction.tier.toLowerCase() })
+            if (pet) {
+                auction.item_name = format_item_name(auction.item_name, { pet: true, tier: auction.tier.toLowerCase() })
+                auction.item_name = auction.item_name.replace(/ /g, '_')
+            }
             // if (pet) auction.item_name = `${auction.item_name.match(/\[lvl ?(?<level>[0-9]+)]/).groups.level}${auction.tier.toLowerCase()}:${auction.item_name.replace(' ', '_')}`;
             Object.keys(auction_items).includes(auction.item_name) ? auction_items[auction.item_name].push(auction.starting_bid) : auction_items[auction.item_name] = [auction.starting_bid];
         }
