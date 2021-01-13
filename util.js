@@ -898,10 +898,7 @@ async function getPets(profile) {
 
 
 module.exports = {
-
-
-
-
+    getPrices: getPrices,
 
 
     getProfile: async (paramPlayer, paramProfile, hypixel_api_key, options = { cacheOnly: false }) => {
