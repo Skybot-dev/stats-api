@@ -38,15 +38,22 @@ const [getPrices, setPrices] = (function () {
 })();
 
 
+const [getAuctions, setAuctions] = (function() {
+    let auctions = [];
+    return [function() { return auctions}, function(newAuctions) { auctions = newAuctions}];
+})();
+
 async function updatePrices() {
     console.log(`[${new Date()}] updating prices...`);
     const bazaar_items = {};
     const auction_items = {};
     let auctions = await fetch(`https://api.hypixel.net/skyblock/auctions?page=0`);
     auctions = await auctions.json();
+    allAuctions = auctions.auctions;
     for (let page = 0; page < auctions.totalPages; page++) {
         auctions = await fetch(`https://api.hypixel.net/skyblock/auctions?page=${page}`);
         auctions = await auctions.json();
+        allAuctions = allAuctions.concat(auctions.auctions);
         for (let auction of auctions.auctions.filter(x => x.bin)) {
             let pet;
             if (auction.item_name.match(/\[lvl ?[0-9]]*/gi)) pet = true; else pet = false;
@@ -59,6 +66,7 @@ async function updatePrices() {
             Object.keys(auction_items).includes(auction.item_name) ? auction_items[auction.item_name].push(auction.starting_bid) : auction_items[auction.item_name] = [auction.starting_bid];
         }
     }
+    setAuctions(allAuctions);
     let bazaar_data = await fetch('https://sky.shiiyu.moe/api/v2/bazaar');
     bazaar_data = await bazaar_data.json();
     const prices = Object.assign({}, getPrices())
@@ -899,6 +907,7 @@ async function getPets(profile) {
 
 module.exports = {
     getPrices: getPrices,
+    getAuctions: getAuctions,
 
 
     getProfile: async (paramPlayer, paramProfile, hypixel_api_key, options = { cacheOnly: false }) => {

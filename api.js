@@ -1,12 +1,16 @@
 const express = require('express');
 
-const { getProfile, getAllItems, getStats, getPrices } = require('./util');
+const { getProfile, getAllItems, getStats, getPrices, getAuctions } = require('./util');
 const app = express();
 
 
 
 app.get('/prices', (req, res) => {
     res.json(getPrices());
+})
+
+app.get('/auctions', (req, res) => {
+    res.json({auctions: getAuctions()});
 })
 
 app.get('/stats/:profile', async(req, res) => {
