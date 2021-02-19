@@ -13,6 +13,7 @@ const parseNbt = util.promisify(nbt.parse);
 
 const rarity_order = ['special', 'mythic', 'legendary', 'epic', 'rare', 'uncommon', 'common'];
 const petTiers = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic'];
+const pet_levels = [100, 110, 120, 130, 145, 160, 175, 190, 210, 230, 250, 275, 300, 330, 360, 400, 440, 490, 540, 600, 660, 730, 800, 880, 960, 1050, 1150, 1260, 1380, 1510, 1650, 1800, 1960, 2130, 2310, 2500, 2700, 2920, 3160, 3420, 3700, 4000, 4350, 4750, 5200, 5700, 6300, 7000, 7800, 8700, 9700, 10800, 12000, 13300, 14700, 16200, 17800, 19500, 21300, 23200, 25200, 27400, 29800, 32400, 35200, 38200, 41400, 44800, 48400, 52200, 56200, 60400, 64800, 69400, 74200, 79200, 84700, 90700, 97200, 104200, 111700, 119700, 128200, 137200, 146700, 156700, 167700, 179700, 192700, 206700, 221700, 237700, 254700, 272700, 291700, 311700, 333700, 357700, 383700, 411700, 441700, 476700, 516700, 561700, 611700, 666700, 726700, 791700, 861700, 936700, 1016700, 1101700, 1191700, 1286700, 1386700, 1496700, 1616700, 1746700, 1886700];
 
 const MAX_SOULS = 209;
 
@@ -30,6 +31,39 @@ const format_item_name = (name, { pet = false, tier='common', level = null } = {
     name = name.replace(/✪/g, '').replace(/§[0-9a-k]/g, '').replace(/⚚/g, '');
     if (!pet) Object.keys(constants.reforges).forEach(reforge => name = name.replace(reforge.toLowerCase(), ''));
     return name.trim();
+}
+
+const format_item_name_beast = (name, tier) => {
+    name = name.toLowerCase();
+    name = `${tier}:${name}`
+    name = name.replace(/✪/g, '').replace(/§[0-9a-k]/g, '').replace(/⚚/g, '');
+    Object.keys(constants.reforges).forEach(reforge => name = name.replace(reforge.toLowerCase(), ''));
+    return name.trim();
+}
+
+const format_item_name_with_rarity = (name, tier) => {
+    name = name.toLowerCase();
+    if (!!tier) {
+        name = `${tier}:${name}`
+    }
+    name = name.replace(/✪/g, '').replace(/§[0-9a-k]/g, '').replace(/⚚/g, '').replace(/✦/g, '');
+    Object.keys(constants.reforges).forEach(reforge => name = name.replace(reforge.toLowerCase(), ''));
+    return name.trim();
+}
+
+async function format_enchanted_book(auction) {
+    try {
+        if (!auction.item_bytes) return 'enchanted book'
+        let item_bytes = await decodeData(Buffer.from(auction.item_bytes, 'base64'))
+        if (Object.keys(item_bytes.i[0].tag.ExtraAttributes.enchantments).length == 1) {
+            return `${Object.keys(item_bytes.i[0].tag.ExtraAttributes.enchantments)[0].toLowerCase()} ${item_bytes.i[0].tag.ExtraAttributes.enchantments[Object.keys(item_bytes.i[0].tag.ExtraAttributes.enchantments)[0]]}`
+        } else {
+            return 'enchanted book'
+        }
+    } catch (err) {
+        return 'enchanted book'
+    }
+
 }
 
 const [getPrices, setPrices] = (function () {
@@ -54,17 +88,22 @@ async function updatePrices() {
         auctions = await fetch(`https://api.hypixel.net/skyblock/auctions?page=${page}`);
         auctions = await auctions.json();
         allAuctions = allAuctions.concat(auctions.auctions);
-        for (let auction of auctions.auctions.filter(x => x.bin)) {
-            let pet;
-            if (auction.item_name.match(/\[lvl ?[0-9]]*/gi)) pet = true; else pet = false;
-            auction.item_name = format_item_name(auction.item_name);
-            if (pet) {
-                auction.item_name = format_item_name(auction.item_name, { pet: true, tier: auction.tier.toLowerCase() })
-                auction.item_name = auction.item_name.replace(/ /g, '_')
-            }
-            // if (pet) auction.item_name = `${auction.item_name.match(/\[lvl ?(?<level>[0-9]+)]/).groups.level}${auction.tier.toLowerCase()}:${auction.item_name.replace(' ', '_')}`;
-            Object.keys(auction_items).includes(auction.item_name) ? auction_items[auction.item_name].push(auction.starting_bid) : auction_items[auction.item_name] = [auction.starting_bid];
+    }
+
+    for (let auction of allAuctions.filter(x => x.bin)) {
+        let pet = !!(auction.item_name.match(/\[lvl ?[0-9]]*/gi))
+        auction.item_name = format_item_name(auction.item_name);
+        if (pet) {
+            auction.item_name = format_item_name(auction.item_name, { pet: true, tier: auction.tier.toLowerCase() })
+            auction.item_name = auction.item_name.replace(/ /g, '_')
         }
+        if (auction.item_name === 'beastmaster crest')
+            auction.item_name = format_item_name_with_rarity(auction.item_name, auction.tier.toLowerCase())
+        if (auction.item_name === 'enchanted book')
+            auction.item_name = await format_enchanted_book(auction)
+        if (auction.item_name.match(/\D{6,8} exp/))
+            auction.item_name = format_item_name_with_rarity(auction.item_name, auction.tier.toLowerCase())
+        Object.keys(auction_items).includes(auction.item_name) ? auction_items[auction.item_name].push(auction.starting_bid) : auction_items[auction.item_name] = [auction.starting_bid];
     }
     setAuctions(allAuctions);
     let bazaar_data = await fetch('https://sky.shiiyu.moe/api/v2/bazaar');
@@ -92,7 +131,10 @@ setInterval(updatePrices, 300000);
 
 function getPrice(item, pet = false) {
     try {
-        let name = pet ? format_item_name(item.type.toLowerCase(), { pet: true, tier: item.tier.toLowerCase(), level: item.level.level <= 75 ? 1 : item.level.level != 100? 2:3 }) : format_item_name(item.tag.display.Name);
+        let name = pet ? format_item_name(item.type.toLowerCase(), { pet: true, tier: item.tier.toLowerCase(), level: item.level <= 75 ? 1 : item.level != 100 ? 2 : 3 }) : format_item_name(item.tag.display.Name);
+        if (name === 'beastmaster crest') {
+            name = format_item_name_beast(item, tier)
+        }
         const prices = getPrices();
         const key = (Object.keys(prices).includes(name)) ? name : Object.keys(prices).includes(item.tag.ExtraAttributes.id) ? item.tag.ExtraAttributes.id : null;
         if (key == null) return 0;
@@ -100,11 +142,101 @@ function getPrice(item, pet = false) {
         if (!pet) {
             val += item.tag.ExtraAttributes.hot_potato_count ? prices.HOT_POTATO_BOOK.min * item.tag.ExtraAttributes.hot_potato_count : 0;
             val += item.tag.ExtraAttributes.rarity_upgrades ? prices.RECOMBOBULATOR_3000.min : 0;
+            val += getReforgePrice(item)
+            val += get_book_price(item)
+            val += getScrolls(item)
+        } else {
+            val += getPetItems(item)
         }
         return val;
     }
     catch (e) {
         return 0;
+    }
+}
+function getPriceByName(item) {
+    try {
+        let name = item.toLowerCase()
+        const prices = getPrices();
+        const key = (Object.keys(prices).includes(name)) ? name : null;
+        if (key == null) return 0;
+        let val = prices[key].min
+        return val;
+    } catch (err) {
+        return 0
+    }
+
+}
+
+function getReforgePrice(item) {
+    try {
+        let reforge = item.tag.display.Name.substring(0, item.tag.display.Name.indexOf(" "))
+        reforge = reforge.replace(/✪/g, '').replace(/\[lvl ?[0-9]*]/gi, '').replace(/§[0-9a-k]/g, '').replace(/⚚/g, '').replace(/✦/g, '');
+        if (constants.reforge_stones[reforge] !== undefined) {
+            return getPriceByName(constants.reforge_stones[reforge].item_name)
+        } else {
+            return 0;
+        }
+    } catch (err) {
+        return 0;
+    }
+
+}
+
+function get_book_price(item) {
+    try {
+        if (!item.tag) return 0
+        if (!item.tag.ExtraAttributes) return 0;
+        if (!item.tag.ExtraAttributes.enchantments) return 0;
+        let val = 0;
+        for (let i = 0; i < Object.keys(item.tag.ExtraAttributes.enchantments).length; i++) {
+            let name = Object.keys(item.tag.ExtraAttributes.enchantments)[i] + ' ' + item.tag.ExtraAttributes.enchantments[Object.keys(item.tag.ExtraAttributes.enchantments)[i]]
+            name = name.toLowerCase()
+            for (let i = 0; i < constants.ignored_enchantments.length; i++) {
+                if (constants.ignored_enchantments[i] === name) {
+                    return 1000
+                }
+            }
+            val += getPriceByName(name)
+        }
+        return val
+    } catch (err) {
+        return 0
+    }
+
+}
+
+function getScrolls(item) {
+    try {
+        if (item.tag.display.Name.toLowerCase().includes('scylla') || item.tag.display.Name.toLowerCase().includes('astraea') || item.tag.display.Name.toLowerCase().includes('hyperion') || item.tag.display.Name.toLowerCase().includes('valkyrie')) {
+            if (!item.tag.ExtraAttributes.ability_scroll) return 0;
+            let val = 0;
+            for (let i = 0; i < item.tag.ExtraAttributes.ability_scroll.length; i++) {
+                let scrollname = item.tag.ExtraAttributes.ability_scroll[i].replace('WITHER_SHIELD_SCROLL', 'wither shield').replace('SHADOW_WARP_SCROLL', 'shadow warp').replace('IMPLOSION_SCROLL', 'implosion');
+                val += getPriceByName(scrollname)
+            }
+            return val
+        } else {
+            return 0
+        }
+    } catch (err) {
+        return 0
+    }
+}
+
+function getPetItems(item) {
+    try {
+        if (item.heldItem === null) return 0
+        if (constants.pet_items[item.heldItem] !== undefined) {
+            if (!!constants.pet_items[item.heldItem].rarity) {
+                return getPriceByName(`${constants.pet_items[item.heldItem].rarity}:${constants.pet_items[item.heldItem].item_name.toLowerCase()}`)
+            } else {
+                return getPriceByName(constants.pet_items[item.heldItem].item_name.toLowerCase())
+            }
+        }
+        return 0
+    } catch (err) {
+        return 0
     }
 }
 
