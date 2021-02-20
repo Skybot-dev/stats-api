@@ -192,12 +192,8 @@ function get_book_price(item) {
         for (let i = 0; i < Object.keys(item.tag.ExtraAttributes.enchantments).length; i++) {
             let name = Object.keys(item.tag.ExtraAttributes.enchantments)[i] + ' ' + item.tag.ExtraAttributes.enchantments[Object.keys(item.tag.ExtraAttributes.enchantments)[i]]
             name = name.toLowerCase()
-            for (let i = 0; i < constants.ignored_enchantments.length; i++) {
-                if (constants.ignored_enchantments[i] === name) {
-                    return 1000
-                }
-            }
-            val += getPriceByName(name)
+            if (constants.ignored_enchantments.includes(name)) val += 1000
+            else val += getPriceByName(name)
         }
         return val
     } catch (err) {
