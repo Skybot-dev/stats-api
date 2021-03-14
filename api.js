@@ -32,15 +32,19 @@ app.get('/stats/:profile', async(req, res) => {
             const items = await getAllItems(userProfile, req.query.pack);
             const data = await getStats(singleProfile, allProfiles, items);
             const networth = {}
+            const detailed_networth = {};
             const NETWORTH_INVS = ["armor", "wardrobe_inventory", "inventory", "enderchest", "talisman_bag", "fishing_bag", "quiver", "potion_bag"];
             Object.keys(items).forEach(inv => {
                 if (NETWORTH_INVS.includes(inv)) {
                     networth[inv] = 0;
+                    detailed_networth[inv] = "";
                     for (let item of items[inv]) {
                         networth[inv] += item.coin_value?item.coin_value:0;
                     }
+                    const networth_details = items[inv].filter(x => x.display_name && x.coin_value).sort((a, b) => (b.coin_value || 0) - (a.coin_value || 0)).map(x => `${x.Count && x.Count > 1? `${x.Count}x `: ''}${x.display_name} - ${x.coin_value.toLocaleString()}`);//.join('\n→ ');
+                    detailed_networth[inv] = networth_details.slice(0, 4).concat(networth_details.length>4?[`+ ${networth_details.length - 4} more`]:[]).join('\n→ ');
                 }
-            }); 
+            });
             networth.pets = data.pets.reduce((a, b) => a + (b.coin_value?b.coin_value:0), 0);
             networth.total = Object.values(networth).reduce((a, b) => a + b, 0);
             const stats = data.stats;
@@ -53,6 +57,7 @@ app.get('/stats/:profile', async(req, res) => {
                 // raw: userProfile,
                 // items,
                 networth,
+                detailed_networth,
                 data: {
                     stats
                 }
