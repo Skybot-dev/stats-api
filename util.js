@@ -23,7 +23,7 @@ const format_item_name = (name, { pet = false, tier='common', level = null } = {
     if (pet) {
         if (!level) {
             const match = (name.match(/\[lvl ?(?<level>[0-9]+)]/))
-            level = match ? match.groups.level <= 75 ? 1 : match.groups.level != 100 ? 2 : 3 : null;
+            level = match ? match.groups.level == 100 ? 2 : 1: null;
             name = name.replace(/\[lvl ?([0-9]*)] ?/gi, `${level}:`);
             name = `${tier}:${name}`
         } else name = `${tier}:${level}:${name}`
@@ -89,8 +89,9 @@ async function updatePrices() {
         auctions = await auctions.json();
         allAuctions = allAuctions.concat(auctions.auctions);
     }
-
-    for (let auction of allAuctions.filter(x => x.bin)) {
+    allAuctions = allAuctions.filter(x => x.bin);
+    setAuctions(allAuctions);
+    for (let auction of allAuctions) {
         let pet = !!(auction.item_name.match(/\[lvl ?[0-9]]*/gi))
         auction.item_name = format_item_name(auction.item_name);
         if (pet) {
@@ -105,17 +106,9 @@ async function updatePrices() {
             auction.item_name = format_item_name_with_rarity(auction.item_name, auction.tier.toLowerCase())
         Object.keys(auction_items).includes(auction.item_name) ? auction_items[auction.item_name].push(auction.starting_bid) : auction_items[auction.item_name] = [auction.starting_bid];
     }
-    setAuctions(allAuctions);
     let bazaar_data = await fetch('https://sky.shiiyu.moe/api/v2/bazaar');
     bazaar_data = await bazaar_data.json();
     const prices = Object.assign({}, getPrices())
-    Object.keys(bazaar_data).forEach(item =>
-        prices[item] = {
-            avg: bazaar_data[item].price,
-            min: Math.round(bazaar_data[item].sellPrice),
-            max: Math.round(bazaar_data[item].buyPrice),
-        }
-    )
     Object.keys(auction_items).forEach(item => {
         prices[item] = {
             avg: auction_items[item].reduce((total, value) => total + value) / auction_items[item].length,
@@ -123,6 +116,13 @@ async function updatePrices() {
             max: Math.round(Math.max(...auction_items[item])),
         }
     });
+    Object.keys(bazaar_data).forEach(item =>
+        prices[item] = {
+            avg: bazaar_data[item].price,
+            min: Math.round(bazaar_data[item].sellPrice),
+            max: Math.round(bazaar_data[item].buyPrice),
+        }
+    )
     setPrices(prices);
     console.log(`[${new Date()}] prices updated`);
 }
@@ -131,14 +131,14 @@ setInterval(updatePrices, 300000);
 
 function getPrice(item, pet = false) {
     try {
-        let name = pet ? format_item_name(item.type.toLowerCase(), { pet: true, tier: item.tier.toLowerCase(), level: item.level <= 75 ? 1 : item.level != 100 ? 2 : 3 }) : format_item_name(item.tag.display.Name);
+        let name = pet ? format_item_name(item.type.toLowerCase(), { pet: true, tier: item.tier.toLowerCase(), level: item.level == 100? 2: 1 }) : format_item_name(item.tag.display.Name);
         if (name === 'beastmaster crest') {
             name = format_item_name_beast(item, tier)
         }
         const prices = getPrices();
         const key = (Object.keys(prices).includes(name)) ? name : Object.keys(prices).includes(item.tag.ExtraAttributes.id) ? item.tag.ExtraAttributes.id : null;
         if (key == null) return 0;
-        let val = prices[key].min
+        let val = prices[key].min * (item.Count || 1);
         if (!pet) {
             val += item.tag.ExtraAttributes.hot_potato_count ? prices.HOT_POTATO_BOOK.min * item.tag.ExtraAttributes.hot_potato_count : 0;
             val += item.tag.ExtraAttributes.rarity_upgrades ? prices.RECOMBOBULATOR_3000.min : 0;
