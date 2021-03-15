@@ -41,8 +41,8 @@ app.get('/stats/:profile', async(req, res) => {
                     for (let item of items[inv]) {
                         networth[inv] += item.coin_value?item.coin_value:0;
                     }
-                    const networth_details = items[inv].filter(x => x.display_name && x.coin_value).sort((a, b) => (b.coin_value || 0) - (a.coin_value || 0)).map(x => `${x.Count && x.Count > 1? `${x.Count}x `: ''}${x.display_name} - ${x.coin_value.toLocaleString()}`);//.join('\n→ ');
-                    detailed_networth[inv] = networth_details.slice(0, 4).concat(networth_details.length>4?[`+ ${networth_details.length - 4} more`]:[]).join('\n→ ');
+                    const networth_details = items[inv].filter(x => x.display_name && x.coin_value).sort((a, b) => (b.coin_value || 0) - (a.coin_value || 0)).map(x => `→ ${x.Count && x.Count > 1? `${x.Count}x `: ''}${x.display_name} - ${x.coin_value.toLocaleString()}`);//.join('\n→ ');
+                    detailed_networth[inv] = networth_details.slice(0, 4).concat(networth_details.length>4?[`+ ${networth_details.length - 4} more`]:[]).join('\n');
                 }
             });
             networth.pets = data.pets.reduce((a, b) => a + (b.coin_value?b.coin_value:0), 0);

@@ -110,6 +110,7 @@ async function updatePrices() {
     bazaar_data = await bazaar_data.json();
     const prices = Object.assign({}, getPrices())
     Object.keys(auction_items).forEach(item => {
+        if (!constants.vanilla_items.includes(item.toLowerCase()))
         prices[item] = {
             avg: auction_items[item].reduce((total, value) => total + value) / auction_items[item].length,
             min: Math.round(Math.min(...auction_items[item])),
@@ -117,7 +118,7 @@ async function updatePrices() {
         }
     });
     Object.keys(bazaar_data).forEach(item =>
-        prices[item] = {
+        prices[bazaar_data[item].name.toLowerCase()] = {
             avg: bazaar_data[item].price,
             min: Math.round(bazaar_data[item].sellPrice),
             max: Math.round(bazaar_data[item].buyPrice),
