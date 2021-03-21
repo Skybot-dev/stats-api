@@ -1,6 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 
 const { getProfile, getAllItems, getStats, getPrices, getAuctions } = require('./util');
+const { scammer_collection } = require('./database');
+const { apiKey } = require('./middleware');
 const app = express();
 
 
@@ -10,10 +13,27 @@ app.get('/prices', (req, res) => {
 })
 
 app.get('/auctions', (req, res) => {
-    res.json({auctions: getAuctions()});
+    res.json({ auctions: getAuctions() });
 })
 
-app.get('/stats/:profile', async(req, res) => {
+app.get('/scammer', apiKey, async (req, res) => {
+
+    const doc = await scammer_collection.findOne({ _id: req.query.uuid });
+    if (!doc) return res
+        .status(404)
+        .json({ scammer: false });
+    res
+        .status(200)
+        .json({
+            scammer: true,
+            uuid: doc._id,
+            reason: doc.reason,
+            operated_staff: doc.mod,
+        });
+
+});
+
+app.get('/stats/:profile', async (req, res) => {
     try {
         const { profile, allProfiles } = await getProfile(req.params.profile, null, req.query.key, { cacheOnly: req.cacheOnly });
 
@@ -39,13 +59,13 @@ app.get('/stats/:profile', async(req, res) => {
                     networth[inv] = 0;
                     detailed_networth[inv] = "";
                     for (let item of items[inv]) {
-                        networth[inv] += item.coin_value?item.coin_value:0;
+                        networth[inv] += item.coin_value ? item.coin_value : 0;
                     }
-                    const networth_details = items[inv].filter(x => x.display_name && x.coin_value).sort((a, b) => (b.coin_value || 0) - (a.coin_value || 0)).map(x => `→ ${x.Count && x.Count > 1? `${x.Count}x `: ''}${x.display_name} - ${x.coin_value.toLocaleString()}`);//.join('\n→ ');
-                    detailed_networth[inv] = networth_details.slice(0, 4).concat(networth_details.length>4?[`+ ${networth_details.length - 4} more`]:[]).join('\n');
+                    const networth_details = items[inv].filter(x => x.display_name && x.coin_value).sort((a, b) => (b.coin_value || 0) - (a.coin_value || 0)).map(x => `→ ${x.Count && x.Count > 1 ? `${x.Count}x ` : ''}${x.display_name} - ${x.coin_value.toLocaleString()}`);//.join('\n→ ');
+                    detailed_networth[inv] = networth_details.slice(0, 4).concat(networth_details.length > 4 ? [`+ ${networth_details.length - 4} more`] : []).join('\n');
                 }
             });
-            networth.pets = data.pets.reduce((a, b) => a + (b.coin_value?b.coin_value:0), 0);
+            networth.pets = data.pets.reduce((a, b) => a + (b.coin_value ? b.coin_value : 0), 0);
             networth.total = Object.values(networth).reduce((a, b) => a + b, 0);
             const stats = data.stats;
             output.success = true;
@@ -76,8 +96,8 @@ app.get('/stats/:profile', async(req, res) => {
                 break;
             case "must be uuid":
                 res.json({ "success": false, "message": "invalid uuid format" })
-                    // case "Player has no SkyBlock profiles":
-                    //     res.json({"success": false, "message": "invalid uuid"})
+            // case "Player has no SkyBlock profiles":
+            //     res.json({"success": false, "message": "invalid uuid"})
             default:
                 break;
         }
