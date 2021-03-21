@@ -1,4 +1,4 @@
-const db = require('monk')(process.env.MONGO_STRING)
+const db = require('monk')(process.env.MONGO_STRING, { collectionOptions: { castIds: false }, authSource: 'admin' })
 
 module.exports = {
     key_collection: db.get("apiKeys"),
