@@ -18,7 +18,7 @@ const pet_levels = [100, 110, 120, 130, 145, 160, 175, 190, 210, 230, 250, 275, 
 const MAX_SOULS = 209;
 
 
-const format_item_name = (name, { pet = false, tier='common', level = null } = {}) => {
+const format_item_name = (name, { pet = false, tier = 'common', level = null, tierboosted = false } = {}) => {
     name = name.toLowerCase();
     if (pet) {
         if (!level) {
@@ -26,7 +26,9 @@ const format_item_name = (name, { pet = false, tier='common', level = null } = {
             level = match ? match.groups.level == 100 ? 2 : 1: null;
             name = name.replace(/\[lvl ?([0-9]*)] ?/gi, `${level}:`);
             name = `${tier}:${name}`
-        } else name = `${tier}:${level}:${name}`
+        } else {
+            name = `${tier}:${level}:${name}${tierboosted ? ':t' : ''}`
+        }
     }
     name = name.replace(/✪/g, '').replace(/§[0-9a-k]/g, '').replace(/⚚/g, '');
     if (!pet) Object.keys(constants.reforges).forEach(reforge => name = name.replace(reforge.toLowerCase(), ''));
@@ -95,7 +97,7 @@ async function updatePrices() {
         let pet = !!(auction.item_name.match(/\[lvl ?[0-9]]*/gi))
         auction.item_name = format_item_name(auction.item_name);
         if (pet) {
-            auction.item_name = format_item_name(auction.item_name, { pet: true, tier: auction.tier.toLowerCase() })
+            auction.item_name = format_item_name(auction.item_name, { pet: true, tier: auction.tier.toLowerCase(), tierboosted: auction.item_lore.includes('Tier Boost') ? true : false})
             auction.item_name = auction.item_name.replace(/ /g, '_')
         }
         if (auction.item_name === 'beastmaster crest')
@@ -132,7 +134,14 @@ setInterval(updatePrices, 300000);
 
 function getPrice(item, pet = false) {
     try {
-        let name = pet ? format_item_name(item.type.toLowerCase(), { pet: true, tier: item.tier.toLowerCase(), level: item.level == 100? 2: 1 }) : format_item_name(item.tag.display.Name);
+        let name;
+        if(pet) {
+            let tierboosted = false;
+            if(!!item.heldItem) item.heldItem === 'PET_ITEM_TIER_BOOST' ? tierboosted = true : tierboosted = false;
+            format_item_name(item.type.toLowerCase(), { pet: true, tier: item.tier.toLowerCase(), level: item.level == 100? 2: 1 , tierboosted});
+        } else {
+            format_item_name(item.tag.display.Name);
+        }
         if (name === 'beastmaster crest') {
             name = format_item_name_beast(item, tier)
         }
