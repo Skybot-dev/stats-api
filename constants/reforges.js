@@ -1,7 +1,7 @@
 module.exports = {
     reforges: {
         // sword and fishing_rod reforges
-        legendary: {
+        /*legendary: {
             item_types: ['sword', 'fishing_rod'],
             common: { strength: 3, crit_chance: 5, crit_damage: 5, intelligence: 5, bonus_attack_speed: 2 },
             uncommon: { strength: 7, crit_chance: 7, crit_damage: 10, intelligence: 8, bonus_attack_speed: 3 },
@@ -9,7 +9,7 @@ module.exports = {
             epic: { strength: 18, crit_chance: 12, crit_damage: 22, intelligence: 18, bonus_attack_speed: 7 },
             legendary: { strength: 25, crit_chance: 15, crit_damage: 28, intelligence: 25, bonus_attack_speed: 10 },
             mythic: { strength: 32, crit_chance: 18, crit_damage: 36, intelligence: 35, bonus_attack_speed: 15 },
-        },
+        },*/
         spicy: {
             item_types: ['sword', 'fishing_rod'],
             common: { strength: 2, crit_chance: 1, crit_damage: 25, bonus_attack_speed: 1 },
@@ -19,7 +19,7 @@ module.exports = {
             legendary: { strength: 10, crit_chance: 1, crit_damage: 80, bonus_attack_speed: 10 },
             mythic: { strength: 12, crit_chance: 1, crit_damage: 100, bonus_attack_speed: 15 },
         },
-        epic: {
+        /*epic: {
             item_types: ['sword', 'fishing_rod'],
             common: { strength: 15, crit_damage: 10, bonus_attack_speed: 1 },
             uncommon: { strength: 20, crit_damage: 15, bonus_attack_speed: 2 },
@@ -27,7 +27,7 @@ module.exports = {
             epic: { strength: 32, crit_damage: 27, bonus_attack_speed: 7 },
             legendary: { strength: 40, crit_damage: 35, bonus_attack_speed: 10 },
             mythic: { strength: 50, crit_damage: 45, bonus_attack_speed: 15 },
-        },
+        },*/
         odd: {
             item_types: ['sword', 'fishing_rod'],
             common: { crit_chance: 12, crit_damage: 10, intelligence: -5 },
@@ -587,7 +587,7 @@ module.exports = {
             legendary: { crit_chance: 2 },
             mythic: { crit_chance: 3 },
         },
-        superior: {
+        /*superior: {
             item_types: ['accessory'],
             common: { strength: 2, crit_damage: 2 },
             uncommon: { strength: 3, crit_damage: 2 },
@@ -595,7 +595,7 @@ module.exports = {
             epic: { strength: 5, crit_damage: 3 },
             legendary: { strength: 7, crit_damage: 3 },
             mythic: { strength: 10, crit_damage: 5 },
-        },
+        },*/
         forceful: {
             item_types: ['accessory'],
             common: { strength: 4 },
