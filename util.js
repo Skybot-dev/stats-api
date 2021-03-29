@@ -83,7 +83,7 @@ async function updatePrices() {
     const auction_items = {};
     let auctions = await fetch(`https://api.hypixel.net/skyblock/auctions?page=0`);
     auctions = await auctions.json();
-    allAuctions = auctions.auctions;
+    let allAuctions = auctions.auctions;
     for (let page = 0; page < auctions.totalPages; page++) {
         auctions = await fetch(`https://api.hypixel.net/skyblock/auctions?page=${page}`);
         auctions = await auctions.json();
@@ -92,19 +92,20 @@ async function updatePrices() {
     allAuctions = allAuctions.filter(x => x.bin);
     setAuctions(allAuctions);
     for (let auction of allAuctions) {
+        let name = auction.item_name;
         let pet = !!(auction.item_name.match(/\[lvl ?[0-9]]*/gi))
-        auction.item_name = format_item_name(auction.item_name);
+        name = format_item_name(name);
         if (pet) {
-            auction.item_name = format_item_name(auction.item_name, { pet: true, tier: auction.tier.toLowerCase() })
-            auction.item_name = auction.item_name.replace(/ /g, '_')
+            name = format_item_name(name, { pet: true, tier: auction.tier.toLowerCase() })
+            name = name.replace(/ /g, '_')
         }
-        if (auction.item_name === 'beastmaster crest')
-            auction.item_name = format_item_name_with_rarity(auction.item_name, auction.tier.toLowerCase())
-        if (auction.item_name === 'enchanted book')
-            auction.item_name = await format_enchanted_book(auction)
-        if (auction.item_name.match(/\D{6,8} exp/))
-            auction.item_name = format_item_name_with_rarity(auction.item_name, auction.tier.toLowerCase())
-        Object.keys(auction_items).includes(auction.item_name) ? auction_items[auction.item_name].push(auction.starting_bid) : auction_items[auction.item_name] = [auction.starting_bid];
+        if (name === 'beastmaster crest')
+            name = format_item_name_with_rarity(name, auction.tier.toLowerCase())
+        if (name === 'enchanted book')
+            name = await format_enchanted_book(auction)
+        if (name.match(/\D{6,8} exp/))
+            name = format_item_name_with_rarity(name, auction.tier.toLowerCase())
+        Object.keys(auction_items).includes(name) ? auction_items[name].push(auction.starting_bid) : auction_items[name] = [auction.starting_bid];
     }
     let bazaar_data = await fetch('https://sky.shiiyu.moe/api/v2/bazaar');
     bazaar_data = await bazaar_data.json();
@@ -132,7 +133,7 @@ setInterval(updatePrices, 300000);
 
 function getPrice(item, pet = false) {
     try {
-        let name = pet ? format_item_name(item.type.toLowerCase(), { pet: true, tier: item.tier.toLowerCase(), level: item.level == 100? 2: 1 }) : format_item_name(item.tag.display.Name);
+        let name = pet ? format_item_name(item.type.toLowerCase(), { pet: true, tier: item.tier.toLowerCase(), level: item.level == 100? 2: 1 }) : format_item_name(item.tag.display.Name || item.display_name);
         if (name === 'beastmaster crest') {
             name = format_item_name_beast(item, tier)
         }
@@ -141,8 +142,8 @@ function getPrice(item, pet = false) {
         if (key == null) return 0;
         let val = prices[key].min * (item.Count || 1);
         if (!pet) {
-            val += item.tag.ExtraAttributes.hot_potato_count ? prices.HOT_POTATO_BOOK.min * item.tag.ExtraAttributes.hot_potato_count : 0;
-            val += item.tag.ExtraAttributes.rarity_upgrades ? prices.RECOMBOBULATOR_3000.min : 0;
+            val += (item.tag.ExtraAttributes.hot_potato_count ? prices["hot potato book"].min * item.tag.ExtraAttributes.hot_potato_count : 0) || 0;
+            val += (item.tag.ExtraAttributes.rarity_upgrades ? prices["recombobulator 3000"].min : 0) || 0;
             val += getReforgePrice(item)
             val += get_book_price(item)
             val += getScrolls(item)
@@ -723,6 +724,7 @@ async function getItems(base64, customTextures = false, packs, cacheOnly = false
     for (let item of items) {
         if (item.inBackpack) {
             items[item.backpackIndex].containsItems.push(Object.assign({}, item));
+            items[item.backpackIndex].coin_value += item.coin_value
         }
     }
 
@@ -1037,6 +1039,12 @@ async function getPets(profile) {
 module.exports = {
     getPrices: getPrices,
     getAuctions: getAuctions,
+
+    formatDetailedNetworth(items, getName=null) {
+        getName = !!getName ? getName : x => `→ ${x.Count && x.Count > 1 ? `${x.Count}x ` : ''}${x.display_name}${helper.hasPath(x, 'tag', 'ExtraAttributes', 'rarity_upgrades')?' <recomb>':''} - ${x.coin_value.toLocaleString()}`;
+        const networth_details = items.filter(x => x.display_name && x.coin_value).sort((a, b) => (b.coin_value || 0) - (a.coin_value || 0)).map(getName);
+        return networth_details.slice(0, 4).concat(networth_details.length > 4 ? [`+ ${networth_details.length - 4} more`] : []).join('\n');
+    },
 
 
     getProfile: async (paramPlayer, paramProfile, hypixel_api_key, options = { cacheOnly: false }) => {
