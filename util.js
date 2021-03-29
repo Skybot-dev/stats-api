@@ -18,7 +18,7 @@ const pet_levels = [100, 110, 120, 130, 145, 160, 175, 190, 210, 230, 250, 275, 
 const MAX_SOULS = 209;
 
 
-const format_item_name = (name, { pet = false, tier='common', level = null } = {}) => {
+const format_item_name = (name, { type=null, pet = false, tier='common', level = null } = {}) => {
     name = name.toLowerCase();
     if (pet) {
         if (!level) {
@@ -29,7 +29,7 @@ const format_item_name = (name, { pet = false, tier='common', level = null } = {
         } else name = `${tier}:${level}:${name}`
     }
     name = name.replace(/✪/g, '').replace(/§[0-9a-k]/g, '').replace(/⚚/g, '');
-    if (!pet) Object.keys(constants.reforges).forEach(reforge => name = name.replace(reforge.toLowerCase(), ''));
+    if (!pet) Object.keys(constants.reforges).filter(reforge => !type || constants.reforges[reforge].item_types.includes(type)).forEach(reforge => name = name.replace(reforge.toLowerCase(), ''));
     return name.trim();
 }
 
@@ -94,7 +94,7 @@ async function updatePrices() {
     for (let auction of allAuctions) {
         let name = auction.item_name;
         let pet = !!(auction.item_name.match(/\[lvl ?[0-9]]*/gi))
-        name = format_item_name(name);
+        name = format_item_name(name, {type: auction.category});
         if (pet) {
             name = format_item_name(name, { pet: true, tier: auction.tier.toLowerCase() })
             name = name.replace(/ /g, '_')
@@ -133,7 +133,7 @@ setInterval(updatePrices, 300000);
 
 function getPrice(item, pet = false) {
     try {
-        let name = pet ? format_item_name(item.type.toLowerCase(), { pet: true, tier: item.tier.toLowerCase(), level: item.level == 100? 2: 1 }) : format_item_name(item.tag.display.Name || item.display_name);
+        let name = pet ? format_item_name(item.type.toLowerCase(), { pet: true, tier: item.tier.toLowerCase(), level: item.level == 100? 2: 1 }) : format_item_name(item.tag.display.Name || item.display_name, {type: item.type});
         if (name === 'beastmaster crest') {
             name = format_item_name_beast(item, tier)
         }

@@ -249,7 +249,7 @@ module.exports = {
         // armor reforges
         candied: {
             // ability: increase chance to find candy by 1%
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { defense: 1, health: 1 },
             uncommon: { defense: 1, health: 2 },
             rare: { defense: 2, health: 4 },
@@ -259,7 +259,7 @@ module.exports = {
         },
         warped_stone: {
             // ability: after using an ability gain +1/2/3/4/5/8 speed for 5s
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { strength: 2, bonus_attack_speed: 2, speed: 1 },
             uncommon: { strength: 4, bonus_attack_speed: 3, speed: 1 },
             rare: { strength: 6, bonus_attack_speed: 4, speed: 2 },
@@ -268,7 +268,7 @@ module.exports = {
             mythic: { strength: 12, bonus_attack_speed: 7, speed: 3 },
         },
         smart: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { defense: 4, health: 4, intelligence: 20 },
             uncommon: { defense: 6, health: 6, intelligence: 40 },
             rare: { defense: 9, health: 9, intelligence: 60 },
@@ -277,7 +277,7 @@ module.exports = {
             mythic: { defense: 20, health: 20, intelligence: 120 },
         },
         clean: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { defense: 5, health: 5, crit_chance: 2 },
             uncommon: { defense: 7, health: 7, crit_chance: 4 },
             rare: { defense: 10, health: 10, crit_chance: 6 },
@@ -286,7 +286,7 @@ module.exports = {
             mythic: { defense: 25, health: 25, crit_chance: 12 },
         },
         fierce: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { strength: 2, crit_chance: 2, crit_damage: 4 },
             uncommon: { strength: 4, crit_chance: 3, crit_damage: 7 },
             rare: { strength: 6, crit_chance: 4, crit_damage: 10 },
@@ -295,7 +295,7 @@ module.exports = {
             mythic: { strength: 12, crit_chance: 8, crit_damage: 24 },
         },
         heavy: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { defense: 25, speed: -1, crit_damage: -1 },
             uncommon: { defense: 35, speed: -1, crit_damage: -2 },
             rare: { defense: 50, speed: -1, crit_damage: -2 },
@@ -304,7 +304,7 @@ module.exports = {
             mythic: { defense: 110, speed: -1, crit_damage: -7 },
         },
         light: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { defense: 1, speed: 1, health: 5, crit_chance: 1, bonus_attack_speed: 1, crit_damage: 1 },
             uncommon: { defense: 2, speed: 2, health: 7, crit_chance: 1, bonus_attack_speed: 2, crit_damage: 2 },
             rare: { defense: 3, speed: 3, health: 10, crit_chance: 2, bonus_attack_speed: 3, crit_damage: 3 },
@@ -313,7 +313,7 @@ module.exports = {
             mythic: { defense: 6, speed: 6, health: 25, crit_chance: 3, bonus_attack_speed: 6, crit_damage: 6 },
         },
         mythic: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { strength: 2, defense: 2, speed: 2, health: 2, crit_chance: 1, intelligence: 20 },
             uncommon: { strength: 4, defense: 4, speed: 2, health: 4, crit_chance: 2, intelligence: 25 },
             rare: { strength: 6, defense: 6, speed: 2, health: 6, crit_chance: 3, intelligence: 30 },
@@ -322,7 +322,7 @@ module.exports = {
             mythic: { strength: 12, defense: 12, speed: 2, health: 12, crit_chance: 6, intelligence: 60 },
         },
         titanic: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { defense: 10, health: 10 },
             uncommon: { defense: 15, health: 15 },
             rare: { defense: 20, health: 20 },
@@ -331,7 +331,7 @@ module.exports = {
             mythic: { defense: 50, health: 50 },
         },
         wise: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { speed: 1, health: 6, intelligence: 25 },
             uncommon: { speed: 1, health: 8, intelligence: 50 },
             rare: { speed: 1, health: 10, intelligence: 75 },
@@ -340,7 +340,7 @@ module.exports = {
             mythic: { speed: 3, health: 20, intelligence: 150 },
         },
         pure: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: {
                 strength: 2,
                 defense: 2,
@@ -403,7 +403,7 @@ module.exports = {
             },
         },
         spiked: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             epic: {
                 strength: 8,
                 defense: 6,
@@ -437,7 +437,7 @@ module.exports = {
         },
         renowned: {
             // ability: +1% player stats
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             epic: {
                 strength: 8,
                 defense: 6,
@@ -471,7 +471,7 @@ module.exports = {
         },
         cubic: {
             // ability: decrease damage take from nether mobs by 2%
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { strength: 3, health: 5 },
             uncommon: { strength: 5, health: 7 },
             rare: { strength: 7, health: 10 },
@@ -480,7 +480,7 @@ module.exports = {
             mythic: { strength: 15, health: 30 },
         },
         reinforced: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { defense: 25 },
             uncommon: { defense: 35 },
             rare: { defense: 50 },
@@ -490,7 +490,7 @@ module.exports = {
         },
         ancient: {
             // ability: +1 crit_damage per catacombs level
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { strength: 4, crit_chance: 3, health: 7, defense: 7, intelligence: 6 },
             uncommon: { strength: 8, crit_chance: 5, health: 7, defense: 7, intelligence: 9 },
             rare: { strength: 12, crit_chance: 7, health: 7, defense: 7, intelligence: 12 },
@@ -500,7 +500,7 @@ module.exports = {
         },
         perfect: {
             // ability: player defense +2%
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { defense: 25 },
             uncommon: { defense: 35 },
             rare: { defense: 50 },
@@ -509,7 +509,7 @@ module.exports = {
             mythic: { defense: 110 },
         },
         giant: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { health: 50 },
             uncommon: { health: 60 },
             rare: { health: 80 },
@@ -518,7 +518,7 @@ module.exports = {
             mythic: { health: 240 },
         },
         submerged: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             rare: { crit_chance: 6, sea_creature_chance: 0.7 },
             legendary: { crit_chance: 10, sea_creature_chance: 0.9 },
             mythic: { crit_chance: 12, sea_creature_chance: 1 },
@@ -542,7 +542,7 @@ module.exports = {
             mythic: { health: 14, defense: 14, intelligence: 120 },
         },
         necrotic: {
-            item_types: ['helmet', 'chestplate', 'leggings', 'boots'],
+            item_types: ['helmet', 'chestplate', 'leggings', 'boots', 'armor'],
             common: { intelligence: 30 },
             uncommon: { intelligence: 60 },
             rare: { intelligence: 90 },
