@@ -107,7 +107,7 @@ async function updatePrices() {
             name = format_item_name_with_rarity(name, auction.tier.toLowerCase())
         Object.keys(auction_items).includes(name) ? auction_items[name].push(auction.starting_bid) : auction_items[name] = [auction.starting_bid];
     }
-    let bazaar_data = await fetch('https://sky.shiiyu.moe/api/v2/bazaar');
+    let bazaar_data = await fetch('https://sky.lea.moe/api/v2/bazaar');
     bazaar_data = await bazaar_data.json();
     const prices = Object.assign({}, getPrices())
     Object.keys(auction_items).forEach(item => {
