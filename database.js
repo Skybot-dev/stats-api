@@ -3,4 +3,5 @@ const db = require('monk')(process.env.MONGO_STRING, { collectionOptions: { cast
 module.exports = {
     key_collection: db.get("apiKeys"),
     scammer_collection: db.get("scammer_list"),
+    jacobevents_collection: db.get("jacobevents"),
 }
