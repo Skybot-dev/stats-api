@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 
 const { getProfile, getAllItems, getStats, getPrices, getAuctions, formatDetailedNetworth } = require('./util');
-const { scammer_collection } = require('./database');
+const { scammer_collection, jacobevents_collection } = require('./database');
 const { apiKey } = require('./middleware');
 const app = express();
 
@@ -15,6 +15,21 @@ app.get('/prices', (req, res) => {
 app.get('/auctions', (req, res) => {
     res.json({ auctions: getAuctions() });
 })
+
+app.get('/upcomingEvents', async (req, res) => {
+    const upcomingEvents = await jacobevents_collection.find({ timestamp: { $gt: Date.now() - 21 * 60 * 1000 } }, {sort: {timestamp: 1}, fields: {_id: 0}});
+    res.send(upcomingEvents)
+})
+
+app.post('/events', async (req, res) => {
+    if (req.body.secret !== process.env.SECRET) {
+        res.status(401);
+        res.send('no');
+    } else {
+        await events.insert(req.body.events);
+        res.send('done');
+    }
+});
 
 app.get('/scammer', apiKey, async (req, res) => {
 
