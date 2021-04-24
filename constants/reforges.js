@@ -2,7 +2,7 @@ module.exports = {
     reforges: {
         // sword and fishing_rod reforges
         legendary: {
-            item_types: ['sword', 'fishing_rod'],
+            item_types: ['sword', 'weapon', 'fishing_rod'],
             common: { strength: 3, crit_chance: 5, crit_damage: 5, intelligence: 5, bonus_attack_speed: 2 },
             uncommon: { strength: 7, crit_chance: 7, crit_damage: 10, intelligence: 8, bonus_attack_speed: 3 },
             rare: { strength: 12, crit_chance: 9, crit_damage: 15, intelligence: 12, bonus_attack_speed: 5 },
@@ -11,7 +11,7 @@ module.exports = {
             mythic: { strength: 32, crit_chance: 18, crit_damage: 36, intelligence: 35, bonus_attack_speed: 15 },
         },
         spicy: {
-            item_types: ['sword', 'fishing_rod'],
+            item_types: ['sword', 'weapon', 'weapon', 'fishing_rod'],
             common: { strength: 2, crit_chance: 1, crit_damage: 25, bonus_attack_speed: 1 },
             uncommon: { strength: 3, crit_chance: 1, crit_damage: 35, bonus_attack_speed: 2 },
             rare: { strength: 4, crit_chance: 1, crit_damage: 45, bonus_attack_speed: 4 },
@@ -20,7 +20,7 @@ module.exports = {
             mythic: { strength: 12, crit_chance: 1, crit_damage: 100, bonus_attack_speed: 15 },
         },
         epic: {
-            item_types: ['sword', 'fishing_rod'],
+            item_types: ['sword', 'weapon', 'fishing_rod'],
             common: { strength: 15, crit_damage: 10, bonus_attack_speed: 1 },
             uncommon: { strength: 20, crit_damage: 15, bonus_attack_speed: 2 },
             rare: { strength: 25, crit_damage: 20, bonus_attack_speed: 4 },
@@ -29,7 +29,7 @@ module.exports = {
             mythic: { strength: 50, crit_damage: 45, bonus_attack_speed: 15 },
         },
         odd: {
-            item_types: ['sword', 'fishing_rod'],
+            item_types: ['sword', 'weapon', 'fishing_rod'],
             common: { crit_chance: 12, crit_damage: 10, intelligence: -5 },
             uncommon: { crit_chance: 15, crit_damage: 15, intelligence: -10 },
             rare: { crit_chance: 15, crit_damage: 15, intelligence: -18 },
@@ -38,7 +38,7 @@ module.exports = {
             mythic: { crit_chance: 30, crit_damage: 40, intelligence: -50 },
         },
         gentle: {
-            item_types: ['sword', 'fishing_rod'],
+            item_types: ['sword', 'weapon', 'fishing_rod'],
             common: { strength: 3, bonus_attack_speed: 8 },
             uncommon: { strength: 5, bonus_attack_speed: 10 },
             rare: { strength: 7, bonus_attack_speed: 15 },
@@ -47,7 +47,7 @@ module.exports = {
             mythic: { strength: 20, bonus_attack_speed: 30 },
         },
         fast: {
-            item_types: ['sword', 'fishing_rod'],
+            item_types: ['sword', 'weapon', 'fishing_rod'],
             common: { bonus_attack_speed: 10 },
             uncommon: { bonus_attack_speed: 20 },
             rare: { bonus_attack_speed: 30 },
@@ -56,7 +56,7 @@ module.exports = {
             mythic: { bonus_attack_speed: 60 },
         },
         fair: {
-            item_types: ['sword', 'fishing_rod'],
+            item_types: ['sword', 'weapon', 'fishing_rod'],
             common: { strength: 2, crit_chance: 2, crit_damage: 2, intelligence: 2, bonus_attack_speed: 2 },
             uncommon: { strength: 3, crit_chance: 3, crit_damage: 3, intelligence: 3, bonus_attack_speed: 3 },
             rare: { strength: 4, crit_chance: 4, crit_damage: 4, intelligence: 4, bonus_attack_speed: 4 },
@@ -65,7 +65,7 @@ module.exports = {
             mythic: { strength: 12, crit_chance: 12, crit_damage: 12, intelligence: 12, bonus_attack_speed: 12 },
         },
         sharp: {
-            item_types: ['sword', 'fishing_rod'],
+            item_types: ['sword', 'weapon', 'fishing_rod'],
             common: { crit_chance: 10, crit_damage: 20 },
             uncommon: { crit_chance: 12, crit_damage: 30 },
             rare: { crit_chance: 14, crit_damage: 40 },
@@ -74,7 +74,7 @@ module.exports = {
             mythic: { crit_chance: 25, crit_damage: 90 },
         },
         heroic: {
-            item_types: ['sword', 'fishing_rod'],
+            item_types: ['sword', 'weapon', 'fishing_rod'],
             common: { strength: 15, intelligence: 40, bonus_attack_speed: 1 },
             uncommon: { strength: 20, intelligence: 50, bonus_attack_speed: 2 },
             rare: { strength: 25, intelligence: 65, bonus_attack_speed: 2 },
@@ -83,7 +83,7 @@ module.exports = {
             mythic: { strength: 50, intelligence: 125, bonus_attack_speed: 7 },
         },
         fabled: {
-            item_types: ['sword', 'fishing_rod'],
+            item_types: ['sword', 'weapon', 'fishing_rod'],
             // Your Critical hits have a chance to deal up to 20% extra damage (from 100% to 120%, randomly)
             common: { strength: 30, crit_damage: 15 },
             uncommon: { strength: 35, crit_damage: 20 },
@@ -93,7 +93,7 @@ module.exports = {
             mythic: { strength: 75, crit_damage: 60 },
         },
         suspicious: {
-            item_types: ['sword', 'fishing_rod'],
+            item_types: ['sword', 'weapon', 'fishing_rod'],
             common: { damage: 15, crit_damage: 30, crit_chance: 1 },
             uncommon: { damage: 15, crit_damage: 40, crit_chance: 2 },
             rare: { damage: 15, crit_damage: 50, crit_chance: 3 },
@@ -102,14 +102,14 @@ module.exports = {
             mythic: { damage: 15, crit_damage: 110, crit_chance: 10 },
         },
         withered: {
-            item_types: ['sword', 'fishing_rod'],
+            item_types: ['sword', 'weapon', 'fishing_rod'],
             common: { strength: 60 },
             epic: { strength: 110 },
             legendary: { strength: 135 },
             mythic: { strength: 170 },
         },
         dirty: {
-            item_types: ['sword', 'fishing_rod'],
+            item_types: ['sword', 'weapon', 'fishing_rod'],
             rare: { strength: 6, bonus_attack_speed: 5, ferocity: 6 },
             epic: { strength: 10, bonus_attack_speed: 10, ferocity: 9 },
             legendary: { strength: 12, bonus_attack_speed: 15, ferocity: 12 },
@@ -118,14 +118,14 @@ module.exports = {
         // sword reforges
         warped: {
             // only aote
-            item_types: ['sword'],
+            item_types: ['sword', 'weapon'],
             rare: { damage: 165, strength: 165 },
             epic: { damage: 165, strength: 165 },
         },
         gilded: {
             // ability: byron's compassion
             // only midas
-            item_types: ['sword'],
+            item_types: ['sword', 'weapon'],
             legendary: { damage: 75, strength: 75 },
             mythic: { damage: 90, strength: 90 },
         },
@@ -150,7 +150,7 @@ module.exports = {
         },
         // bow reforges
         awkward: {
-            item_types: ['bow'],
+            item_types: ['bow', 'weapon'],
             common: { crit_chance: 10, crit_damage: 5, intelligence: -5 },
             uncommon: { crit_chance: 12, crit_damage: 10, intelligence: -10 },
             rare: { crit_chance: 15, crit_damage: 15, intelligence: -18 },
@@ -159,7 +159,7 @@ module.exports = {
             mythic: { crit_chance: 30, crit_damage: 40, intelligence: -60 },
         },
         rich: {
-            item_types: ['bow'],
+            item_types: ['bow', 'weapon'],
             common: { strength: 2, crit_chance: 10, crit_damage: 1, intelligence: 20 },
             uncommon: { strength: 3, crit_chance: 12, crit_damage: 2, intelligence: 25 },
             rare: { strength: 4, crit_chance: 14, crit_damage: 4, intelligence: 30 },
@@ -168,7 +168,7 @@ module.exports = {
             mythic: { strength: 12, crit_chance: 25, crit_damage: 15, intelligence: 75 },
         },
         fine: {
-            item_types: ['bow'],
+            item_types: ['bow', 'weapon'],
             common: { strength: 3, crit_chance: 5, crit_damage: 2 },
             uncommon: { strength: 7, crit_chance: 7, crit_damage: 4 },
             rare: { strength: 12, crit_chance: 9, crit_damage: 7 },
@@ -177,7 +177,7 @@ module.exports = {
             mythic: { strength: 40, crit_chance: 20, crit_damage: 20 },
         },
         neat: {
-            item_types: ['bow'],
+            item_types: ['bow', 'weapon'],
             common: { crit_chance: 10, crit_damage: 4, intelligence: 3 },
             uncommon: { crit_chance: 12, crit_damage: 8, intelligence: 6 },
             rare: { crit_chance: 14, crit_damage: 14, intelligence: 10 },
@@ -186,7 +186,7 @@ module.exports = {
             mythic: { crit_chance: 25, crit_damage: 40, intelligence: 30 },
         },
         hasty: {
-            item_types: ['bow'],
+            item_types: ['bow', 'weapon'],
             common: { strength: 3, crit_chance: 20 },
             uncommon: { strength: 5, crit_chance: 25 },
             rare: { strength: 7, crit_chance: 30 },
@@ -195,7 +195,7 @@ module.exports = {
             mythic: { strength: 20, crit_chance: 60 },
         },
         grand: {
-            item_types: ['bow'],
+            item_types: ['bow', 'weapon'],
             common: { strength: 25 },
             uncommon: { strength: 32 },
             rare: { strength: 40 },
@@ -204,7 +204,7 @@ module.exports = {
             mythic: { strength: 70 },
         },
         rapid: {
-            item_types: ['bow'],
+            item_types: ['bow', 'weapon'],
             common: { strength: 2, crit_damage: 35 },
             uncommon: { strength: 3, crit_damage: 45 },
             rare: { strength: 4, crit_damage: 55 },
@@ -213,7 +213,7 @@ module.exports = {
             mythic: { strength: 12, crit_damage: 90 },
         },
         deadly: {
-            item_types: ['bow'],
+            item_types: ['bow', 'weapon'],
             common: { crit_chance: 10, crit_damage: 5 },
             uncommon: { crit_chance: 13, crit_damage: 10 },
             rare: { crit_chance: 16, crit_damage: 18 },
@@ -222,7 +222,7 @@ module.exports = {
             mythic: { crit_chance: 25, crit_damage: 70 },
         },
         unreal: {
-            item_types: ['bow'],
+            item_types: ['bow', 'weapon'],
             common: { strength: 3, crit_chance: 8, crit_damage: 5 },
             uncommon: { strength: 7, crit_chance: 9, crit_damage: 10 },
             rare: { strength: 12, crit_chance: 10, crit_damage: 18 },
@@ -231,14 +231,14 @@ module.exports = {
             mythic: { strength: 34, crit_chance: 15, crit_damage: 75 },
         },
         spiritual: {
-            item_types: ['bow'],
+            item_types: ['bow', 'weapon'],
             epic: { strength: 20, crit_chance: 10, crit_damage: 37 },
             legendary: { strength: 28, crit_chance: 12, crit_damage: 55 },
             mythic: { strength: 38, crit_chance: 14, crit_damage: 75 },
         },
         precise: {
             // ability: 10% when hitting the head of a mob
-            item_types: ['bow'],
+            item_types: ['bow', 'weapon'],
             common: { strength: 3, crit_chance: 8, crit_damage: 5 },
             uncommon: { strength: 7, crit_chance: 9, crit_damage: 10 },
             rare: { strength: 12, crit_chance: 10, crit_damage: 18 },
