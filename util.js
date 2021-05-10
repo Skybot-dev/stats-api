@@ -143,7 +143,7 @@ function getPrice(item, pet = false) {
         let val = prices[key].min * (item.Count || 1);
         if (!pet) {
             val += (item.tag.ExtraAttributes.hot_potato_count ? prices["hot potato book"].min * item.tag.ExtraAttributes.hot_potato_count : 0) || 0;
-            val += (item.tag.ExtraAttributes.rarity_upgrades ? prices["recombobulator 3000"].min : 0) || 0;
+            val += (item.tag.ExtraAttributes.rarity_upgrades && val >= 600_000 ? prices["recombobulator 3000"].min : 0) || 0;
             val += getReforgePrice(item)
             val += get_book_price(item)
             val += getScrolls(item)
@@ -1217,6 +1217,7 @@ module.exports = {
         let quiver = 'quiver' in profile ? await getItems(profile.quiver.data, customTextures, packs, cacheOnly) : [];
         let potion_bag = 'potion_bag' in profile ? await getItems(profile.potion_bag.data, customTextures, packs, cacheOnly) : [];
         let candy_bag = 'candy_inventory_contents' in profile ? await getItems(profile.candy_inventory_contents.data, customTextures, packs, cacheOnly) : [];
+        output.backpacks = 'backpack_contents' in profile ? (await Promise.all(Object.values(profile.backpack_contents).map(async x => await getItems(x.data, customTextures, packs, cacheOnly)))).flat() : [];
 
         const wardrobeColumns = wardrobe_inventory.length / 4;
 

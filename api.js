@@ -53,12 +53,12 @@ app.get('/stats/:profile', async (req, res) => {
             const data = await getStats(singleProfile, allProfiles, items);
             const networth = {}
             const detailed_networth = {};
-            const NETWORTH_INVS = ["armor", "wardrobe_inventory", "inventory", "enderchest", "talisman_bag", "fishing_bag", "quiver", "potion_bag"];
+            const NETWORTH_INVS = ["armor", "wardrobe_inventory", "inventory", "enderchest", "talisman_bag", "fishing_bag", "quiver", "potion_bag", "backpacks"];
             Object.keys(items).forEach(inv => {
                 if (NETWORTH_INVS.includes(inv)) {
                     networth[inv] = 0;
                     for (let item of items[inv]) {
-                        networth[inv] += item.coin_value ? item.coin_value : 0;
+                        networth[inv] += item.coin_value || 0;
                     }
                     detailed_networth[inv] = formatDetailedNetworth(items[inv]);
                 }
