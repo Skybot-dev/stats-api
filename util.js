@@ -769,6 +769,7 @@ function getBonusStat(level, skill, max, incremention) {
 }
 
 function getSlayerLevel(slayer, slayerName) {
+    if (!Object.keys(constants.slayer_xp).includes(slayerName)) return {};
     let { xp, claimed_levels } = slayer;
 
     let currentLevel = 0;
