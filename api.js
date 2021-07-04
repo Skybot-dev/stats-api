@@ -2,11 +2,28 @@ require('dotenv').config();
 const express = require('express');
 
 const { getProfile, getAllItems, getStats, getPrices, getAuctions, formatDetailedNetworth } = require('./util');
-const { scammer_collection } = require('./database');
-const { apiKey } = require('./middleware');
 const app = express();
 
+if (process.env.SCAMMER_API) {
+    const { scammer_collection } = require('./database');
+    const { apiKey } = require('./middleware');
+    app.get('/scammer', apiKey, async (req, res) => {
 
+        const doc = await scammer_collection.findOne({ _id: req.query.uuid });
+        if (!doc) return res
+            .status(404)
+            .json({ scammer: false });
+        res
+            .status(200)
+            .json({
+                scammer: true,
+                uuid: doc._id,
+                reason: doc.reason,
+                operated_staff: doc.mod,
+            });
+
+    });
+}
 
 app.get('/prices', (req, res) => {
     res.json(getPrices());
@@ -16,22 +33,6 @@ app.get('/auctions', (req, res) => {
     res.json({ auctions: getAuctions() });
 })
 
-app.get('/scammer', apiKey, async (req, res) => {
-
-    const doc = await scammer_collection.findOne({ _id: req.query.uuid });
-    if (!doc) return res
-        .status(404)
-        .json({ scammer: false });
-    res
-        .status(200)
-        .json({
-            scammer: true,
-            uuid: doc._id,
-            reason: doc.reason,
-            operated_staff: doc.mod,
-        });
-
-});
 
 app.get('/stats/:profile', async (req, res) => {
     try {
